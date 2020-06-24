@@ -1,0 +1,168 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "helm.openshift.io/v1alpha1",
+          "kind": "HelmChartRepository",
+          "metadata": {
+            "name": "example-helmchartrepository"
+          },
+          "spec": {
+            "size": 3
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: helmchartrepository.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: HelmChartRepository is the Schema for the helmchartrepositories
+        API
+      kind: HelmChartRepository
+      name: helmchartrepositories.helm.openshift.io
+      version: v1alpha1
+  description: Configures helm chart repositories
+  displayName: Helm Chart Repository Config
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - helmchartrepository
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - helm.openshift.io
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: helmchartrepository
+      deployments:
+      - name: helmchartrepository
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: helmchartrepository
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: helmchartrepository
+            spec:
+              containers:
+              - command:
+                - helmchartrepository
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: helmchartrepository
+                image: quay.io/redhat-developer/helm-chart-repository-configuration-api:latest
+                imagePullPolicy: Always
+                name: helmchartrepository
+                resources: {}
+              serviceAccountName: helmchartrepository
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - devtools
+  - helm
+  links:
+  - name: Helmchartrepository
+    url: https://helmchartrepository.domain
+  maintainers:
+  - email: shbose@redhat.com
+    name: Shoubhik
+  maturity: alpha
+  provider:
+    name: Red Hat Inc
+  version: 0.0.1

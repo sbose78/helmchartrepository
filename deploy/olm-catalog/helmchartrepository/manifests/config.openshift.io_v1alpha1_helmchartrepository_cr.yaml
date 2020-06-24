@@ -1,0 +1,7 @@
+apiVersion: helm.openshift.io/v1alpha1
+kind: HelmChartRepository
+metadata:
+  name: example-helmchartrepository
+spec:
+  # Add fields here
+  size: 3

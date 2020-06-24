@@ -1,0 +1,12 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: helmchartrepository
+subjects:
+- kind: ServiceAccount
+  name: helmchartrepository
+  namespace: openshift-operators
+roleRef:
+  kind: Role
+  name: helmchartrepository
+  apiGroup: rbac.authorization.k8s.io

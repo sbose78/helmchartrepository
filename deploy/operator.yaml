@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helmchartrepository
+  namespace: openshift-operators
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: helmchartrepository
+  template:
+    metadata:
+      labels:
+        name: helmchartrepository
+    spec:
+      serviceAccountName: helmchartrepository
+      containers:
+        - name: helmchartrepository
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - helmchartrepository
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              value: ""
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "helmchartrepository"
